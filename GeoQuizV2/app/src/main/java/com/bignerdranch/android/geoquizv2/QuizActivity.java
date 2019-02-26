@@ -1,5 +1,8 @@
 package com.bignerdranch.android.geoquizv2;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,22 +15,26 @@ import com.bignerdranch.android.geoquizv2.R;
 
 public class QuizActivity extends AppCompatActivity {
 
-    private static final String TAG = "QuizActivity";
+    private static final String TAG = "QuizActivity345";
     private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button trueButton;
     private Button falseButton;
     private Button nextButton;
+    private Button cheatButton;
     private TextView questionTextView;
 
-    private com.bignerdranch.android.geoquiz.Question[] questionBank = new com.bignerdranch.android.geoquiz.Question[]{
-            new com.bignerdranch.android.geoquiz.Question(R.string.question_australia, true),
-            new com.bignerdranch.android.geoquiz.Question(R.string.question_oceans, true),
-            new com.bignerdranch.android.geoquiz.Question(R.string.question_mideast, false),
-            new com.bignerdranch.android.geoquiz.Question(R.string.question_africa, false),
-            new com.bignerdranch.android.geoquiz.Question(R.string.question_americas, true),
-            new com.bignerdranch.android.geoquiz.Question(R.string.question_asia, true),
+    private com.bignerdranch.android.geoquizv2.Question[] questionBank = new com.bignerdranch.android.geoquizv2.Question[]{
+            new com.bignerdranch.android.geoquizv2.Question(R.string.question_australia, true),
+            new com.bignerdranch.android.geoquizv2.Question(R.string.question_oceans, true),
+            new com.bignerdranch.android.geoquizv2.Question(R.string.question_mideast, false),
+            new com.bignerdranch.android.geoquizv2.Question(R.string.question_africa, false),
+            new com.bignerdranch.android.geoquizv2.Question(R.string.question_americas, true),
+            new com.bignerdranch.android.geoquizv2.Question(R.string.question_asia, true),
     };
+
+    private boolean[] cheatQuestionBank = new boolean[questionBank.length];
 
     private int currentIndex = 0;
 
@@ -39,6 +46,7 @@ public class QuizActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             currentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            cheatQuestionBank = savedInstanceState.getBooleanArray("cheater");
         }
 
         questionTextView = findViewById(R.id.quest_text);
@@ -71,6 +79,16 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+        cheatButton = findViewById(R.id.cheat_button);
+        cheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean answerIsTrue = questionBank[currentIndex].isTrueAnswer();
+                Intent intent = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
+                startActivityForResult(intent, REQUEST_CODE_CHEAT);
+            }
+        });
+
         updateQuestion();
     }
 
@@ -95,6 +113,7 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, currentIndex);
+        savedInstanceState.putBooleanArray("cheater", cheatQuestionBank);
     }
 
     @Override
@@ -114,16 +133,33 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean pressed){
-        boolean realAnswer = questionBank[currentIndex].isTrueAnswer();
-
         int messageResId = 0;
 
-        if (pressed == realAnswer){
-            messageResId = R.string.correct_toast;
+        if (cheatQuestionBank[currentIndex]){
+            messageResId = R.string.judgment_toast;
         } else {
-            messageResId = R.string.incorrect_toast;
+            boolean realAnswer = questionBank[currentIndex].isTrueAnswer();
+
+            if (pressed == realAnswer) {
+                messageResId = R.string.correct_toast;
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            cheatQuestionBank[currentIndex] = CheatActivity.wasAnswerShown(data);
+        }
     }
 }
