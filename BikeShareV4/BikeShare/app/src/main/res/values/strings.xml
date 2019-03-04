@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BikeShare</string>
     <string name="button_name">Add Bike</string>
+    <string name="button_name_start">Add Ride</string>
+    <string name="button_name_end">End Ride</string>
+    <string name="button_name_list">List Rides</string>
 </resources>

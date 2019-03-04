@@ -1,6 +1,8 @@
 package com.bignerdranch.android.bikeshare;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,9 +13,25 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class BikeShareActivity extends AppCompatActivity {
+public class BikeShareActivity extends AppCompatActivity  {
 
-    private static final int REQUEST_CODE_START = 0;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bike_share);
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+
+        if (fragment == null) {
+            fragment = new BikeShareFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment)
+                    .commit();
+        }
+
+    }
+
+   /* private static final int REQUEST_CODE_START = 0;
     private static final int REQUEST_CODE_END = 1;
 
     private Button startRide;
@@ -66,5 +84,5 @@ public class BikeShareActivity extends AppCompatActivity {
         adapter = new RideArrayAdapter(this, rides);
         listRides = findViewById(R.id.list_rides);
         listRides.setAdapter(adapter);
-    }
+    }*/
 }

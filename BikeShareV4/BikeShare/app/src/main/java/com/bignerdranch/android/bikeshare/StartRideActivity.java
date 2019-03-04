@@ -35,13 +35,14 @@ public class StartRideActivity extends AppCompatActivity {
                 if (newBike.getText().length() > 0 && newPlace.getText().length() > 0){
                     ride = new Ride(newBike.getText().toString().trim(), newPlace.getText().toString().trim(), "");
                     sRidesDB.addRide(newBike.getText().toString().trim(), newPlace.getText().toString().trim());
+                    updateUI();
                 }
                 else{
+                    System.out.println("error");
                     Toast.makeText(StartRideActivity.this, "Fill everything", Toast.LENGTH_SHORT).show();
                 }
                 newBike.setText("");
                 newPlace.setText("");
-                updateUI();
             }
         });
     }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <View
+        android:layout_width ="match_parent"
+        android:layout_height ="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/button_name_start"
+        android:background="@color/button"
+        android:id="@+id/start_ride"/>
+
+    <View
+        android:layout_width ="match_parent"
+        android:layout_height ="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/button_name_end"
+        android:background="@color/button"
+        android:id="@+id/end_ride"/>
+
+    <View
+        android:layout_width ="match_parent"
+        android:layout_height ="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/button_name_list"
+        android:background="@color/button"
+        android:id="@+id/list_of_rides"/>
+
+    <View
+        android:layout_width ="match_parent"
+        android:layout_height ="20dp" />
+
+    <ListView
+        android:id="@+id/list_rides"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/list"
+        android:textSize="12sp" >
+
+    </ListView>
+
+</LinearLayout>
