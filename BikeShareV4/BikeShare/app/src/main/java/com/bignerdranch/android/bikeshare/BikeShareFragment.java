@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -23,7 +24,6 @@ public class BikeShareFragment extends Fragment {
     private RideArrayAdapter adapter;
     private ListView listRides;
 
-    private Ride ride;
     private List<Ride> rides;
     private boolean clicked = false;
 
@@ -96,6 +96,13 @@ public class BikeShareFragment extends Fragment {
     
     private void updateUI() {
         listRides = v.findViewById(R.id.list_rides);
+        listRides.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                rides.remove(position);
+                adapter.notifyDataSetChanged();
+            }
+        });
         listRides.setAdapter(adapter);
     }
 }
