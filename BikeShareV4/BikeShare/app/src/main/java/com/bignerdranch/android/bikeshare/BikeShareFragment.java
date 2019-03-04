@@ -15,6 +15,7 @@ import java.util.List;
 public class BikeShareFragment extends Fragment {
     private static final int REQUEST_CODE_START = 0;
     private static final int REQUEST_CODE_END = 1;
+    private static final String KEY_CLICK = "click";
 
     private Button startRide;
     private Button endRide;
@@ -40,6 +41,10 @@ public class BikeShareFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_bike_share, container, false);
 
+        if (savedInstanceState != null) {
+            clicked = savedInstanceState.getBoolean(KEY_CLICK, false);
+        }
+
         sRidesDB = RidesDB.get(getContext());
 
         startRide = v.findViewById(R.id.start_ride);
@@ -48,7 +53,8 @@ public class BikeShareFragment extends Fragment {
 
         rides = sRidesDB.getRidesDB();
         adapter = new RideArrayAdapter(getContext(), rides);
-
+        if(clicked) updateUI();
+        
         startRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +74,7 @@ public class BikeShareFragment extends Fragment {
         listRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clicked = true;
                 updateUI();
             }
         });
@@ -81,6 +88,12 @@ public class BikeShareFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(KEY_CLICK, clicked);
+    }
+    
     private void updateUI() {
         listRides = v.findViewById(R.id.list_rides);
         listRides.setAdapter(adapter);
