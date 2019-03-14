@@ -1,5 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +33,22 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else{
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -42,21 +56,25 @@ public class CrimeListFragment extends Fragment {
 
         private TextView titleCrime;
         private TextView dateCrime;
+        private ImageView solvedCrime;
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
             itemView.setOnClickListener(this);
             titleCrime = itemView.findViewById(R.id.crime_title);
             dateCrime = itemView.findViewById(R.id.crime_date);
+            solvedCrime = itemView.findViewById(R.id.crime_solved);
         }
 
         public void bind(Crime crime) {
             crimes = crime;
             titleCrime.setText(crimes.getmTitle());
             dateCrime.setText(crimes.getmDate().toString());
+            solvedCrime.setVisibility(crime.ismSolved() ? View.VISIBLE : View.GONE);
         }  @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), crimes.getmTitle() + " fuck you!!!", Toast.LENGTH_SHORT).show();
+            Intent intent = CrimeActivity.newIntent(getActivity(), crimes.getmId(), this.getLayoutPosition());
+            startActivity(intent);
         }
     }
 

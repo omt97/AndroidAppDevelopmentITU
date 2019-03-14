@@ -1,14 +1,31 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.UUID;
+
 public class CrimeActivity extends /*AppCompatActivity*/ SingleFragmentActivity {
+
+    private static final String EXTRA_CRIME_ID = "com.bignerdranch.android.criminalintent.crime_id";
+    private static final String EXTRA_CRIME_POS = "com.bignerdranch.android.criminalintent.position";
+
     @Override
     protected Fragment createFragment() {
-        return new CrimeFragment();
+        UUID crimeID = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        int position = (int) getIntent().getSerializableExtra(EXTRA_CRIME_POS);
+        return CrimeFragment.newInstance(crimeID, position);
+    }
+
+    public static Intent newIntent(Context context, UUID crimeID, int position) {
+        Intent intent = new Intent(context, CrimeActivity.class);
+        intent.putExtra(EXTRA_CRIME_ID, crimeID);
+        intent.putExtra(EXTRA_CRIME_POS, position);
+        return intent;
     }
 
     /*@Override
