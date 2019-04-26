@@ -19,6 +19,7 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private boolean done = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,7 +29,9 @@ public class CrimeListFragment extends Fragment {
                 .findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        System.out.println("hello");
         updateUI();
+        done = true;
 
         return view;
     }
@@ -41,12 +44,16 @@ public class CrimeListFragment extends Fragment {
 
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
+        if (!done) CrimeLab.createRow();
         List<Crime> crimes = crimeLab.getCrimes();
         if (mAdapter == null) {
+            System.out.println(2);
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         }
         else{
+            System.out.println(4);
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -73,7 +80,7 @@ public class CrimeListFragment extends Fragment {
             solvedCrime.setVisibility(crime.ismSolved() ? View.VISIBLE : View.GONE);
         }  @Override
         public void onClick(View v) {
-            Intent intent = CrimeActivity.newIntent(getActivity(), crimes.getmId(), this.getLayoutPosition());
+            Intent intent = ViewPagerActivity.newIntent(getActivity(), crimes.getmId(), this.getLayoutPosition());
             startActivity(intent);
         }
     }
@@ -99,6 +106,13 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        public void setCrimes(List<Crime> crimes){
+            mCrimes = crimes;
+        }
+
+        public void createRows() {
         }
     }
 }
